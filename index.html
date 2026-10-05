@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="de" class="no-js">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>bgmon — Selbstgehostetes CGM-Monitoring mit Alarmen &amp; AGP-Bericht</title>
+		<meta
+			name="description"
+			content="bgmon ist ein selbstgehostetes Echtzeit-Monitoring für kontinuierliche Glukosemessung: Live-Dashboard, mehrstufige Alarme, Web-Push und Telefonanrufe, AGP-Bericht als Druck/PDF und eine ML-Prognose für die kommenden 30, 60 und 120 Minuten."
+		/>
+		<meta name="theme-color" content="#f7f7f5" />
+		<link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+		<link rel="stylesheet" href="assets/style.css" />
+	</head>
+	<body>
+		<a class="skip" href="#inhalt">Zum Inhalt springen</a>
+
+		<header class="top">
+			<div class="wrap top__in">
+				<a class="brand" href="#top">
+					<img src="assets/logo.svg" width="30" height="30" alt="" />
+					<span>bgmon</span>
+				</a>
+				<nav class="nav" aria-label="Hauptnavigation">
+					<a href="#funktionen">Funktionen</a>
+					<a href="#alarme">Alarme</a>
+					<a href="#muster">Muster</a>
+					<a href="#bericht">AGP-Bericht</a>
+					<a href="#technik">Technik</a>
+					<a class="btn btn--sm" href="https://github.com/mcfetz/bgmon">GitHub</a>
+				</nav>
+			</div>
+		</header>
+
+		<main id="inhalt">
+			<!-- ── Hero ─────────────────────────────────────────────── -->
+			<section class="hero" id="top">
+				<div class="wrap hero__in">
+					<div class="hero__copy" data-reveal>
+						<p class="eyebrow">Selbstgehostet · MIT · Flask &amp; SvelteKit</p>
+						<h1>
+							Der Blutzucker meldet sich,<br />
+							<b>wenn es darauf ankommt.</b>
+						</h1>
+						<p class="lead">
+							bgmon ist ein Echtzeit-Monitoring für kontinuierliche Glukosemessung (CGM).
+							Es holt die Werte vom Sensor, bewertet sie gegen eigene Schwellwerte und
+							alarmiert per Push oder Telefonanruf — für Patient und Pflegende, auch
+							wenn die App gar nicht offen ist.
+						</p>
+						<div class="cta">
+							<a class="btn" href="https://github.com/mcfetz/bgmon">Auf GitHub ansehen</a>
+							<a class="btn btn--ghost" href="#start">Schnellstart</a>
+						</div>
+						<ul class="facts">
+							<li><b>30 s</b> Abfrage-Intervall</li>
+							<li><b>4</b> Schwellenstufen</li>
+							<li><b>90 Tage</b> AGP-Bericht</li>
+							<li><b>Offline</b> als PWA</li>
+						</ul>
+					</div>
+					<figure class="hero__shot" data-reveal>
+						<img
+							src="assets/shots/dashboard.png"
+							width="1500"
+							height="917"
+							alt="bgmon-Dashboard mit Live-Glukosekurve, Schwellenlinien und TIR-Statistik"
+						/>
+						<figcaption>
+							Live-Dashboard — Verlauf mit Schwellenlinien bei 54, 70, 180 und 250&nbsp;mg/dL.
+						</figcaption>
+					</figure>
+				</div>
+			</section>
+
+			<!-- ── Problem ──────────────────────────────────────────── -->
+			<section class="band" id="problem">
+				<div class="wrap">
+					<h2 data-reveal>Ein Sensor liefert Daten. bgmon macht daraus eine Entscheidung.</h2>
+					<p class="section-lead" data-reveal>
+						Die eigentliche Frage ist selten „wie hoch ist der Wert gerade“, sondern
+						„muss jetzt jemand etwas tun“ — mitten in der Nacht, während einer Schicht
+						oder fünf Minuten vor dem Frühstück.
+					</p>
+					<div class="cards">
+						<article class="card" data-reveal>
+							<h3>Die Kurve ist da, der Blick fehlt</h3>
+							<p>
+								Ein CGM-Sensor misst alle paar Minuten. Wer nicht 24 Stunden auf den
+								Bildschirm schaut, erfährt eine Unterzuckerung trotzdem — nur zu spät.
+							</p>
+						</article>
+						<article class="card" data-reveal>
+							<h3>Stille Alarme sind keine Alarme</h3>
+							<p>
+								Ein Alarm im Handy, das auf dem Nachttisch liegt, wird überhört. bgmon
+								ruft an, wenn es ernst wird — und zwar konfigurierbar pro Schwellwert.
+							</p>
+						</article>
+						<article class="card" data-reveal>
+							<h3>Übergabe braucht einen Beleg</h3>
+							<p>
+								Für die Nachbetreuung zählt nicht der einzelne Wert, sondern das
+								Zeitmuster. Der AGP-Bericht macht daraus ein PDF, das Diabetologen
+								kennen.
+							</p>
+						</article>
+					</div>
+				</div>
+			</section>
+
+			<!-- ── Funktionen ───────────────────────────────────────── -->
+			<section class="band band--alt" id="funktionen">
+				<div class="wrap">
+					<h2 data-reveal>Was bgmon kann</h2>
+					<p class="section-lead" data-reveal>
+						Alles auf einem eigenen Server, mit eigener Datenbank. Keine Fremd-API
+						zwischenschalten — außer dem CGM-Dienst, aus dem die Messwerte stammen.
+					</p>
+					<div class="grid">
+						<article class="tile" data-reveal>
+							<h3>Live-Dashboard</h3>
+							<p>
+								Aktueller Wert, Trendpfeil und Verlaufsgraph in mg/dL oder mmol/L, mit
+								TIR-Statistik und Now-Mode, der der Uhrzeit folgt.
+							</p>
+						</article>
+						<article class="tile" data-reveal>
+							<h3>CGM-Anbindung</h3>
+							<p>
+								Automatische Abfrage alle 30 Sekunden über LibreLinkUp. Kommt nichts
+								mehr, ist das ein eigener Alarmgrund — kein stilles Loch in der Kurve.
+							</p>
+						</article>
+						<article class="tile" data-reveal>
+							<h3>Alarme in vier Stufen</h3>
+							<p>
+								Kritisch niedrig, niedrig, hoch, kritisch hoch — eigene Grenzwerte pro
+								User, mit Snooze gegen Alarm-Spam.
+							</p>
+						</article>
+						<article class="tile" data-reveal>
+							<h3>Push und Anruf</h3>
+							<p>
+								Web-Push über VAPID funktioniert auch bei geschlossener PWA. Für
+								kritische Werte lässt sich zusätzlich ein Twilio-Anruf mit deutschem
+								Sprachtext und Retry einrichten.
+							</p>
+						</article>
+						<article class="tile" data-reveal>
+							<h3>Keine-Daten-Alarm</h3>
+							<p>
+								Ein Sensor-Timeout wird als eigener Schwellwert behandelt: konfigurierbar,
+								automatisch aufgelöst, sobald wieder Werte eingehen.
+							</p>
+						</article>
+						<article class="tile" data-reveal>
+							<h3>Familie-Dashboard</h3>
+							<p>
+								Ein Lese-Link mit eigenem Token für Angehörige — ohne Login, ohne
+								Schreibrecht, öffentlich teilbar.
+							</p>
+						</article>
+						<article class="tile" data-reveal>
+							<h3>Logbuch</h3>
+							<p>
+								Kohlenhydrate, Insulin, Basalrate und Notizen in einem Protokoll, mit
+								KI-Schätzung der KE aus Text oder Foto.
+							</p>
+						</article>
+						<article class="tile" data-reveal>
+							<h3>Schichten &amp; Nachtprofil</h3>
+							<p>
+								Schicht-Management für den Nachtdienst, dazu ein Nachtprofil mit
+								reduzierter Helligkeit und vereinfachter Bedienung.
+							</p>
+						</article>
+						<article class="tile" data-reveal>
+							<h3>Streaks und TIR</h3>
+							<p>
+								Zeit im Zielbereich als Wochen- und Monatsstatistik, konsequente
+								Eintragungen werden mit Streaks belohnt.
+							</p>
+						</article>
+						<article class="tile" data-reveal>
+							<h3>PWA</h3>
+							<p>
+								Offline-fähig über Service Worker, installierbar auf iOS, Android und
+								Desktop.
+							</p>
+						</article>
+					</div>
+				</div>
+			</section>
+
+			<!-- ── Alarme ──────────────────────────────────────────── -->
+			<section class="band" id="alarme">
+				<div class="wrap split">
+					<div data-reveal>
+						<h2>Alarme, die ankommen</h2>
+						<p class="section-lead">
+							Der Alarmweg ist getrennt vom Schwellwert konfigurierbar. Was im Klartext
+							geht, kann über den eigenen Nutzungsweg laufen — und SNOOZE hält Nachtruhe
+							heraus, ohne echte Ereignisse zu verschlucken.
+						</p>
+						<dl class="spec">
+							<div>
+								<dt>Schwellwerte</dt>
+								<dd>Vier Stufen pro User, frei einstellbar</dd>
+							</div>
+							<div>
+								<dt>Kanäle</dt>
+								<dd>Web-Push (VAPID), Twilio-Anruf mit Retry</dd>
+							</div>
+							<div>
+								<dt>Profile</dt>
+								<dd>Notification-Profile routen jeden Schwellwert einzeln</dd>
+							</div>
+							<div>
+								<dt>Snooze</dt>
+								<dd>Standardmäßig 15 Minuten, konfigurierbar</dd>
+							</div>
+							<div>
+								<dt>Keine Daten</dt>
+								<dd>Eigener Schwellwert, 1–600 Minuten, Default 15</dd>
+							</div>
+						</dl>
+					</div>
+					<figure class="shot" data-reveal>
+						<img
+							src="assets/shots/familie.png"
+							width="1200"
+							height="800"
+							alt="Familie-Dashboard als Lese-Link mit aktuellem Glukosewert"
+							loading="lazy"
+						/>
+						<figcaption>
+							Familie-Dashboard — ein Lese-Link für Angehörige, ohne Zugangsdaten.
+						</figcaption>
+					</figure>
+				</div>
+			</section>
+
+			<!-- ── Smart Alerts ────────────────────────────────────── -->
+			<section class="band band--alt" id="muster">
+				<div class="wrap">
+					<h2 data-reveal>Smart Alerts — Muster statt Einzelwert</h2>
+					<p class="section-lead" data-reveal>
+						bgmon bewertet nicht nur den aktuellen Wert, sondern den Verlauf davor. Fünf
+						Muster werden erkannt und als eigener Hinweis im Dashboard angezeigt.
+					</p>
+					<div class="alerts">
+						<div class="alert" data-reveal>
+							<span class="alert__ic">&#128640;</span>
+							<div>
+								<h3>Postprandialer Spike</h3>
+								<p>Anstiege über 100&nbsp;mg/dL nach einer Mahlzeit.</p>
+							</div>
+						</div>
+						<div class="alert" data-reveal>
+							<span class="alert__ic">&#128260;</span>
+							<div>
+								<h3>Hypo-Rebound</h3>
+								<p>Gegenregulation nach einer Unterzuckerung ohne Kohlenhydrat-Gabe.</p>
+							</div>
+						</div>
+						<div class="alert" data-reveal>
+							<span class="alert__ic">&#128137;</span>
+							<div>
+								<h3>Insulin-Stacking</h3>
+								<p>Mehrere Korrekturgaben innerhalb der Wirkzeit, mit IOB-Berechnung.</p>
+							</div>
+						</div>
+						<div class="alert" data-reveal>
+							<span class="alert__ic">&#127749;</span>
+							<div>
+								<h3>Dawn-Phänomen</h3>
+								<p>Morgendlicher Anstieg ohne Nahrungsaufnahme zwischen 04:00 und 08:00 Uhr.</p>
+							</div>
+						</div>
+						<div class="alert" data-reveal>
+							<span class="alert__ic">&#128202;</span>
+							<div>
+								<h3>Überkorrektur-Kreislauf</h3>
+								<p>Der gefährliche Hypo&#8594;Hyper&#8594;Hypo-Zyklus im 4-Stunden-Fenster.</p>
+							</div>
+						</div>
+						<div class="alert" data-reveal>
+							<span class="alert__ic">&#9888;</span>
+							<div>
+								<h3>Kompressionstiefwert</h3>
+								<p>
+									Falsch niedrige Werte durch Sensor-Kompression — erkannt über konstante
+									Verläufe, starke Abfälle ohne Insulin und Boden-Plateaus.
+								</p>
+							</div>
+						</div>
+					</div>
+					<p class="note" data-reveal>
+						Alle Schwellwerte der Mustererkennung sind in den Einstellungen anpassbar.
+					</p>
+				</div>
+			</section>
+
+			<!-- ── AGP-Bericht ─────────────────────────────────────── -->
+			<section class="band" id="bericht">
+				<div class="wrap">
+					<h2 data-reveal>AGP-Bericht zum Ausdrucken</h2>
+					<p class="section-lead" data-reveal>
+						Das ambulante Glukoseprofil im FreeStyle-Libre-3-Format — der klinische
+						Standard, den Diabetologen erwarten. Zehn Abschnitte, A4-Seitenaufteilung mit
+						automatischen Umbrüchen, als PDF in einem Klick.
+					</p>
+					<figure class="shot shot--wide" data-reveal>
+						<img
+							src="assets/shots/bericht-agp.png"
+							width="1500"
+							height="938"
+							alt="AGP-Bericht mit Perzentil-Bändern der Glukosekurve"
+							loading="lazy"
+						/>
+						<figcaption>
+							AGP-Bericht — Perzentil-Bänder (P5 bis P95) über den gewählten Zeitraum.
+						</figcaption>
+					</figure>
+					<ul class="tags" data-reveal>
+						<li>Glukosestatistik</li>
+						<li>AGP-Kurve</li>
+						<li>Tagesprofile</li>
+						<li>Tagesverläufe überlagert</li>
+						<li>Monatskalender</li>
+						<li>Tagesprotokoll</li>
+						<li>Momentaufnahme</li>
+						<li>Mahlzeitenprofil</li>
+						<li>Wochenübersicht</li>
+						<li>Tagesmuster</li>
+					</ul>
+				</div>
+			</section>
+
+			<!-- ── Prognose ────────────────────────────────────────── -->
+			<section class="band band--alt" id="prognose">
+				<div class="wrap split split--rev">
+					<div data-reveal>
+						<h2>BG-Prognose: 30, 60 und 120 Minuten voraus</h2>
+						<p class="section-lead">
+							Je Horizont eine eigene lineare Regression, trainiert auf den eigenen
+							historischen Daten mit Walk-Forward-Cross-Validation. Eingangen sind 15
+							Signale — aktueller und gemittelter Wert, Steigung, Kohlenhydrate, Insulin,
+							Basalrate, Korrekturfaktor und Tageszeit.
+						</p>
+						<p>
+							Im Dashboard erscheinen farbige Prognoselinien mit Konfidenzbändern. Ein
+							Filter blendet historische Prognosen ein oder aus — so lässt sich
+							nachprüfen, wie gut die Vorhersage von vor zwei Stunden war.
+						</p>
+						<p class="callout">
+							Die Prognose ist <b>display-only</b>: keine Alarmierung und keine
+							Behandlungsempfehlung.
+						</p>
+					</div>
+					<figure class="shot" data-reveal>
+						<img
+							src="assets/shots/dashboard-mobile.png"
+							width="760"
+							height="2715"
+							alt="bgmon-Dashboard in der mobilen Ansicht mit Prognose und Statistik"
+							loading="lazy"
+						/>
+						<figcaption>Dashboard auf dem Handy — als PWA installierbar.</figcaption>
+					</figure>
+				</div>
+			</section>
+
+			<!-- ── Technik ─────────────────────────────────────────── -->
+			<section class="band" id="technik">
+				<div class="wrap">
+					<h2 data-reveal>Technik</h2>
+					<div class="stack" data-reveal>
+						<div><dt>Backend</dt><dd>Python 3.12+, Flask 3, SQLAlchemy 2</dd></div>
+						<div><dt>Frontend</dt><dd>Svelte 5, Vite 8, TypeScript</dd></div>
+						<div><dt>Datenbank</dt><dd>PostgreSQL 18</dd></div>
+						<div><dt>Telefonie</dt><dd>Twilio Voice API</dd></div>
+						<div><dt>Push</dt><dd>VAPID / Web-Push (pywebpush)</dd></div>
+						<div><dt>Scheduler</dt><dd>APScheduler mit Leader-Election</dd></div>
+						<div><dt>WSGI</dt><dd>Gunicorn (Produktion)</dd></div>
+						<div><dt>Container</dt><dd>Docker, Compose, Docker Swarm</dd></div>
+					</div>
+					<p class="note" data-reveal>
+						Mehrere Instanzen sind vorgesehen: Die Leader-Election über eine
+						<code>scheduler_leader</code>-Tabelle verhindert doppelte Alarm-Jobs, und die
+						Session-Auth läuft über sichere Cookies mit bcrypt-gehashten Passwörtern.
+					</p>
+				</div>
+			</section>
+
+			<!-- ── Start ───────────────────────────────────────────── -->
+			<section class="band band--alt" id="start">
+				<div class="wrap">
+					<h2 data-reveal>Loslegen</h2>
+					<p class="section-lead" data-reveal>
+						Aus Repository klonen, Container starten, Migrationen anwenden. Für Push und
+						Anrufe werden VAPID-Keys und ein Twilio-Account ergänzt.
+					</p>
+					<div class="codes">
+						<pre data-reveal><code>git clone https://github.com/mcfetz/bgmon.git
+cd bgmon
+
+cp .env.example .env
+# SECRET_KEY, BGMON_DATABASE_URL, BGMON_PUBLIC_BASE_URL setzen
+
+docker compose up -d --build
+docker compose exec backend flask predictor train</code></pre>
+						<pre data-reveal><code># VAPID-Keys für Web-Push (einmalig)
+./scripts/generate-vapid-keys.sh --write</code></pre>
+					</div>
+				</div>
+			</section>
+
+			<!-- ── CTA ─────────────────────────────────────────────── -->
+			<section class="cta-band">
+				<div class="wrap cta-band__in" data-reveal>
+					<h2>bgmon läuft auf deinem Server</h2>
+					<p>
+						Kein SaaS, keine Nutzungsgrenze, keine Daten bei fremden Anbietern. Python,
+						PostgreSQL und Docker genügen.
+					</p>
+					<div class="cta">
+						<a class="btn" href="https://github.com/mcfetz/bgmon">Repository auf GitHub</a>
+						<a class="btn btn--ghost" href="https://github.com/mcfetz/bgmon/blob/main/README.md">
+							Dokumentation
+						</a>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<footer class="foot">
+			<div class="wrap foot__in">
+				<p class="foot__brand"><img src="assets/logo.svg" width="24" height="24" alt="" /> bgmon</p>
+				<p class="disclaimer">
+					<b>Kein Medizinprodukt.</b> bgmon ersetzt weder ein klassisches CGM-System noch
+					ärztliche Betreuung. Alarme und Prognosen sind unverbindliche Hinweise und
+					keine Behandlungsempfehlung. Bei Beschwerden wende dich an medizinisches
+					Fachpersonal.
+				</p>
+				<p class="foot__meta">
+					MIT-Lizenz · entwickelt von
+					<a href="https://github.com/mcfetz">mcfetz</a> ·
+					<a href="https://github.com/mcfetz/bgmon/issues">Issues</a>
+				</p>
+			</div>
+		</footer>
+
+		<script>
+			document.documentElement.classList.remove('no-js');
+			document.documentElement.classList.add('js');
+
+			(function () {
+				var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+				var items = document.querySelectorAll('[data-reveal]');
+				var show = function (el) {
+					el.classList.add('is-in');
+				};
+
+				if (reduced || !('IntersectionObserver' in window)) {
+					items.forEach(show);
+					return;
+				}
+
+				var io = new IntersectionObserver(
+					function (entries) {
+						entries.forEach(function (entry) {
+							if (entry.isIntersecting) {
+								show(entry.target);
+								io.unobserve(entry.target);
+							}
+						});
+					},
+					{ rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+				);
+
+				items.forEach(function (el) {
+					io.observe(el);
+				});
+
+				// Failsafe: if the observer never fires (odd viewport, printer,
+				// restored scroll position), reveal everything shortly after load.
+				setTimeout(function () {
+					items.forEach(function (el) {
+						if (!el.classList.contains('is-in')) {
+							el.classList.add('is-in');
+						}
+					});
+				}, 2500);
+			})();
+		</script>
+	</body>
+</html>
