@@ -6,7 +6,7 @@
 		<title>bgmon — Selbstgehostetes CGM-Monitoring mit Alarmen &amp; AGP-Bericht</title>
 		<meta
 			name="description"
-			content="bgmon ist ein selbstgehostetes Echtzeit-Monitoring für kontinuierliche Glukosemessung: Live-Dashboard, mehrstufige Alarme, Web-Push und Telefonanrufe, AGP-Bericht als Druck/PDF und eine ML-Prognose für die kommenden 30, 60 und 120 Minuten."
+			content="bgmon ist ein selbstgehostetes Echtzeit-Monitoring für kontinuierliche Glukosemessung: Live-Dashboard, mehrstufige Alarme, Web-Push und Telefonanrufe, AGP-Bericht als Druck/PDF, Vorrats-Tracking für Insulin, Spritzenköpfe und Sensoren sowie eine ML-Prognose für die kommenden 30, 60 und 120 Minuten."
 		/>
 		<meta name="theme-color" content="#f7f7f5" />
 		<link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
@@ -165,7 +165,16 @@
 							<h3>Logbuch</h3>
 							<p>
 								Kohlenhydrate, Insulin, Basalrate und Notizen in einem Protokoll, mit
-								KI-Schätzung der KE aus Text oder Foto.
+								KI-Schätzung der KE aus Text oder Foto und Dosisvorschlag aus KE-Faktor und
+								Korrektur — exakt gerechnet, in 0,5-Schritten übernommen.
+							</p>
+						</article>
+						<article class="tile" data-reveal>
+							<h3>Vorrat</h3>
+							<p>
+								Schnellinsulin, Basalinsulin, Spritzenköpfe und Sensoren im Blick: aus
+								Bestand und tatsächlichem Verbrauch wird berechnet, wie viele Tage der
+								Vorrat noch reicht — inklusive Nachschub-Warnung.
 							</p>
 						</article>
 						<article class="tile" data-reveal>
@@ -222,7 +231,11 @@
 							</div>
 							<div>
 								<dt>Keine Daten</dt>
-								<dd>Eigener Schwellwert, 1–600 Minuten, Default 15</dd>
+								<dd>Eigener Schwellwert, 1–1440 Minuten, Default 15</dd>
+							</div>
+							<div>
+								<dt>Vorrat</dt>
+								<dd>Eigener Hinweis, wenn Insulin, Spritzenköpfe oder Sensoren knapp werden</dd>
 							</div>
 						</dl>
 					</div>
@@ -335,6 +348,37 @@
 						<li>Wochenübersicht</li>
 						<li>Tagesmuster</li>
 					</ul>
+					<dl class="spec" data-reveal>
+						<div>
+							<dt>Mengen im Verlauf</dt>
+							<dd>
+								Kohlenhydrate, Schnellinsulin und Basaldosis stehen direkt am Marker
+								(<code>7.5KE</code>, <code>11.5U</code>) — über vier Spuren gestapelt, damit
+								sich gleichzeitige Einträge nicht überdecken.
+							</dd>
+						</div>
+						<div>
+							<dt>Korrektur statt Mahlzeit</dt>
+							<dd>
+								Schnellinsulin ohne Kohlenhydrat-Eintrag im 15-Minuten-Fenster wird als
+								Korrekturinsulin mit eigenem Kennbuchstaben <b>K</b> geführt.
+							</dd>
+						</div>
+						<div>
+							<dt>Einstellungsänderungen</dt>
+							<dd>
+								Änderungen von KE-Faktor und Basaldosis erscheinen als gestrichelte Linie
+								mit Vorher-/Nachher-Wert im Verlauf.
+							</dd>
+						</div>
+						<div>
+							<dt>Unterzuckerungen</dt>
+							<dd>
+								Ereignisse zählen erst ab 15 Minuten unter 70&nbsp;mg/dL — nach
+								AGP/ATTD-Konsens und damit vergleichbar mit LibreView.
+							</dd>
+						</div>
+					</dl>
 				</div>
 			</section>
 
@@ -353,6 +397,12 @@
 							Im Dashboard erscheinen farbige Prognoselinien mit Konfidenzbändern. Ein
 							Filter blendet historische Prognosen ein oder aus — so lässt sich
 							nachprüfen, wie gut die Vorhersage von vor zwei Stunden war.
+						</p>
+						<p>
+							Training und Auswertung laufen aus den Einstellungen heraus und zeigen
+							Fortschritt, Laufzeit und Restzeit. Die Auswertung stellt die
+							Modell-Abweichung der Baseline „letzten Wert fortschreiben“ gegenüber und
+							sagt, wie belastbar der Wert ist.
 						</p>
 						<p class="callout">
 							Die Prognose ist <b>display-only</b>: keine Alarmierung und keine
@@ -377,8 +427,8 @@
 				<div class="wrap">
 					<h2 data-reveal>Technik</h2>
 					<div class="stack" data-reveal>
-						<div><dt>Backend</dt><dd>Python 3.12+, Flask 3, SQLAlchemy 2</dd></div>
-						<div><dt>Frontend</dt><dd>Svelte 5, Vite 8, TypeScript</dd></div>
+						<div><dt>Backend</dt><dd>Python 3.14, Flask 3, SQLAlchemy 2 (psycopg 3)</dd></div>
+						<div><dt>Frontend</dt><dd>Svelte 5, SvelteKit 3, Vite 8, TypeScript</dd></div>
 						<div><dt>Datenbank</dt><dd>PostgreSQL 18</dd></div>
 						<div><dt>Telefonie</dt><dd>Twilio Voice API</dd></div>
 						<div><dt>Push</dt><dd>VAPID / Web-Push (pywebpush)</dd></div>
@@ -447,6 +497,7 @@ docker compose exec backend flask predictor train</code></pre>
 				<p class="foot__meta">
 					MIT-Lizenz · entwickelt von
 					<a href="https://github.com/mcfetz">mcfetz</a> ·
+					<a href="https://github.com/mcfetz/bgmon/releases">Release v0.3.0</a> ·
 					<a href="https://github.com/mcfetz/bgmon/issues">Issues</a>
 				</p>
 			</div>
